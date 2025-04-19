@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Away - Brasa de Miraflores</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .cart-container {
+            position: fixed;
+            right: 0;
+            top: var(--nav-height);
+            width: 300px;
+            height: calc(100vh - var(--nav-height));
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .cart-container.active {
+            transform: translateX(0);
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-display {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .quantity-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--border-color);
+        }
+
+        .quantity-btn i {
+            font-size: 0.7rem;
+        }
+
+        .cart-total {
+            font-weight: bold;
+            text-align: right;
+            margin: 20px 0;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .cart-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent-color);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-to-cart-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .customer-info {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 8px;
+        }
+
+        .customer-info h4 {
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input[type="date"],
+        .form-group input[type="time"] {
+            padding: 6px 12px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .nav-checkout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-checkout-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .nav-cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent-color);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .nav-checkout-btn span:not(.nav-cart-badge) {
+                display: none;
+            }
+            
+            .nav-checkout-btn {
+                padding: 8px;
+            }
+        }
+
+        .date-picker-container {
+            position: relative;
+        }
+
+        .time-slots {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            margin-top: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .time-slots.active {
+            display: block;
+        }
+
+        .time-slots-header {
+            padding: 10px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            font-weight: 500;
+        }
+
+        .time-slots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 10px;
+        }
+
+        .time-slot {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            background: #f0f0f0;
+        }
+
+        .time-slot.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .time-slot.disabled {
+            background: #f8f8f8;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        /* Order confirmation modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: modalAppear 0.3s ease;
+        }
+
+        @keyframes modalAppear {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-secondary, .btn-primary {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: var(--text-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .order-success-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .order-success-icon i {
+            font-size: 4rem;
+            color: #34D186;
+        }
+
+        .order-number {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="container">
+                <div class="nav-left">
+                    <a href="index.html" class="logo">
+                        <div class="logo-brand">
+                            <div class="logo-square">
+                                <div class="logo-text">BRASA DE</div>
+                                <div class="logo-text">MIRAFLORES</div>
+                                <div class="since">Desde 2004</div>
+                            </div>
+                        </div>
+                    </a>
+                    <ul class="nav-menu">
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="menu.html">Menu</a></li>
+                        <li><a href="takeaway.html" class="active">Takeaway</a></li>
+                        <li><a href="index.html#sobre">Sobre</a></li>
+                        <li><a href="index.html#contacto">Contacto</a></li>
+                        <li><button class="nav-checkout-btn" onclick="document.querySelector('.cart-toggle').click()">
+                            <i class="fas fa-shopping-cart"></i>
+                            Finalizar Pedido
+                            <span class="nav-cart-badge">0</span>
+                        </button></li>
+                    </ul>
+                </div>
+                <div class="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="menu-page">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Take Away</h2>
+                    <p class="subtitle">Faça o seu pedido para levar</p>
+                </div>
+
+                <div class="menu-grid">
+                    <!-- Menu sections will be dynamically loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Shopping Cart -->
+    <button class="cart-toggle">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge">0</span>
+    </button>
+
+    <div class="cart-container">
+        <div class="cart-header">
+            <h3>Seu Pedido</h3>
+            <button class="close-cart"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-total">
+            Total: €0.00
+        </div>
+        <div class="customer-info">
+            <h4>Informações do Cliente</h4>
+            <div class="form-group">
+                <label for="pickup-date">Data de Levantamento</label>
+                <div class="date-picker-container">
+                    <input type="date" id="pickup-date" name="pickup-date" required>
+                    <div class="time-slots">
+                        <div class="time-slots-header">Horários Disponíveis</div>
+                        <div class="time-slots-grid" id="timeSlots"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="pickup-time">Hora de Levantamento (24h)</label>
+                <input type="time" id="pickup-time" name="pickup-time" required step="900" min="11:00" max="22:00">
+            </div>
+            <div class="form-group">
+                <label for="customer-name">Nome</label>
+                <input type="text" id="customer-name" name="customer-name" required>
+            </div>
+            <div class="form-group">
+                <label for="customerPhone">Telefone</label>
+                <input type="tel" id="customerPhone" placeholder="Telefone" required>
+            </div>
+            <div class="form-group">
+                <label for="customerEmail">Email</label>
+                <input type="email" id="customerEmail" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <label for="customerNotes">Observações</label>
+                <textarea id="customerNotes" placeholder="Observações" rows="3"></textarea>
+            </div>
+        </div>
+        <button class="checkout-btn">Finalizar Pedido</button>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div class="modal" id="orderConfirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmação do Pedido</h3>
+                <button class="close-modal" id="closeConfirmationModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="confirmationModalBody">
+                <div class="order-processing">
+                    <p class="text-center">Processando seu pedido...</p>
+                    <div class="text-center">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+                <div class="order-success" style="display: none;">
+                    <div class="order-success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h4 class="text-center">Pedido Enviado com Sucesso!</h4>
+                    <div class="order-number"></div>
+                    <p class="text-center">Seu pedido foi recebido e está sendo preparado.</p>
+                    <p class="text-center">Por favor, chegue no horário agendado para recolher seu pedido.</p>
+                </div>
+                <div class="order-error" style="display: none;">
+                    <div class="order-error-icon text-center">
+                        <i class="fas fa-exclamation-circle" style="font-size: 4rem; color: #D4442C;"></i>
+                    </div>
+                    <h4 class="text-center">Erro ao Processar Pedido</h4>
+                    <p class="text-center">Ocorreu um erro ao processar seu pedido. Por favor, tente novamente.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelOrder">Cancelar</button>
+                <button class="btn-primary" id="confirmOrder">Confirmar</button>
+                <button class="btn-primary" id="viewOrderDetails" style="display: none;">Ver Detalhes</button>
+                <button class="btn-primary" id="newOrder" style="display: none;">Novo Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load menu items from menu.html
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuGrid = document.querySelector('.menu-grid');
+            
+            // Function to create menu sections
+            function createMenuSection(category, title, items) {
+                const section = document.createElement('div');
+                section.className = 'menu-categoria-section';
+                section.id = category;
+                
+                section.innerHTML = `
+                    <h3>${title}</h3>
+                    <div class="menu-items">
+                        ${items.map(item => `
+                            <div class="menu-item" data-category="${category}">
+                                <div class="menu-item-info">
+                                    <h4>${item.name}</h4>
+                                    <p>${item.description || ''}</p>
+                                    <span class="preco">${item.price}</span>
+                                    <div class="menu-item-actions">
+                                        <button class="quantity-btn" onclick="updateQuantityInline('${item.name}', -1)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <span class="quantity-display" data-item="${item.name}">0</span>
+                                        <button class="add-to-cart-btn" onclick="updateQuantityInline('${item.name}', 1)">
+                                            <i class="fas fa-plus"></i>
+                                            Adicionar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                return section;
+            }
+
+            // Menu data
+            const menuData = {
+                entradas: {
+                    title: 'ENTRADAS',
+                    items: [
+                        { name: 'Sopa de Legumes', price: '€2,00' },
+                        { name: 'Pão (1 uni.)', price: '€0,50' },
+                        { name: 'Manteiga (1 uni.)', price: '€0,50' },
+                        { name: 'Azeitonas', price: '€2,00' },
+                        { name: 'Queijo Seco (1 uni.)', price: '€3,00' },
+                        { name: 'Morcela Assada', price: '€4,50' },
+                        { name: 'Chouriço Assado', price: '€4,50' },
+                        { name: 'Croquetes (3 unid.)', price: '€3,00' },
+                        { name: 'Rissois de Carne (3 unid.)', price: '€3,00' },
+                        { name: 'Rissois de Camarão (3 unid.)', price: '€3,00' },
+                        { name: 'Amendoins com sal', price: '€2,50' },
+                        { name: 'Pastéis de Bacalhau (3 unid.)', price: '€3,00' },
+                        { name: 'Nuggets de Frango (5 unids)', price: '€3,00' },
+                        { name: 'Chamuças (2 unid.)', price: '€3,00' },
+                        { name: 'Aros de Cebola (10 unid.)', price: '€3,00' },
+                        { name: 'Sticks de Mozarella (5 unid.)', price: '€3,50' },
+                        { name: 'Bifana de Perú', description: 'Bifana de Perú no pão com batata frita', price: '€4,00' },
+                        { name: 'Bifana de Porco', description: 'Bifana de porco no pão com batata frita', price: '€4,00' },
+                        { name: 'Prego de Novilho', description: 'Prego de Novilho com batata frita', price: '€5,00' }
+                    ]
+                },
+                frango: {
+                    title: 'FRANGO DA GUIA',
+                    items: [
+                        { name: '1/2 Frango da Guia', description: 'Frango Assado na brasa em carvão vegetal.', price: '€4,50' },
+                        { name: '1 Frango da Guia', description: 'Frango Assado na brasa em carvão vegetal.', price: '€8,50' },
+                        { name: '2 Frangos da Guia', description: 'Frango Assado na brasa em carvão vegetal.', price: '€17,00' }
+                    ]
+                },
+                carnes: {
+                    title: 'CARNE NA BRASA',
+                    items: [
+                        { name: 'Mista da Casa', description: 'Salsicha, entremeada, picanha e lombo de porco. Acompanhados com batatas fritas.', price: '€8,50' },
+                        { name: 'Entremeada', description: '3 fatias. Acompanhados com batatas fritas.', price: '€7,50' },
+                        { name: 'Salsichas', description: '3 Salsichas. Acompanhados com batatas fritas.', price: '€7,50' },
+                        { name: 'Lombo de Porco', description: '3 fatias. Acompanhados com batatas fritas.', price: '€7,50' },
+                        { name: 'Alheira com Ovo', description: 'Alheira com ovo estrelado, acompanhado com batatas fritas', price: '€8,00' },
+                        { name: 'Panados de Perú', description: '2 Fatias. Acompanhados com batatas fritas.', price: '€7,50' },
+                        { name: 'Bife de Perú', description: '2 Fatias. Acompanhados com batatas fritas.', price: '€7,50' },
+                        { name: 'Picanha', description: '3 fatias. Acompanhados com batatas fritas.', price: '€8,50' },
+                        { name: 'Picanha com Alho', description: '3 fatias. Acompanhados com batatas fritas.', price: '€8,50' },
+                        { name: 'Secretos de Porco Preto', description: '2 fatias. Acompanhados com batatas fritas.', price: '€8,50' },
+                        { name: 'Plano de Entrecosto (15 mins)', description: '15 mins de confecção. Acompanhados com batatas fritas.', price: '€9,00' },
+                        { name: 'Bife de Novilho', description: 'Bife grelhado na brasa, batata frita e ovo estrelado.', price: '€8,50' },
+                        { name: 'Costeleta de Novilho', description: 'Costeleta de Novilho (400-500 gramas), acompanhado com batatas fritas e ovo estrelado.', price: '€10,50' },
+                        { name: 'Bife da Vazia', description: 'Bife da Vazia c/ovo estrelado e batatas fritas', price: '€10,50' },
+                        { name: 'Alheira de Lamego', description: 'Alheira de Lamego com ovo estrelado e batatas fritas', price: '€8,00' },
+                        { name: 'Hambúrguer no Prato', description: 'Hambúrguer 100% novilho com queijo e ovo estrelado. Acompanhado de batatas fritas, sem pão', price: '€8,00' },
+                        { name: 'Espetada de Frango', description: 'Espetada de Frango com batatas fritas. Servida sem o espeto', price: '€8,50' },
+                        { name: 'Espetada Mista', description: 'Salsicha, chouriço, carne de porco e novilho, pimento e cebola. Acompanhado de batatas fritas. Servida sem o espeto', price: '€8,50' },
+                        { name: 'Espetada de Novilho', description: 'Espetada de Novilho com batatas fritas. Servida sem o espeto', price: '€11,00' },
+                        { name: 'Picanha Especial da América do Sul', description: 'Picanha Especial da América do Sul. Acompanhada com batatas fritas', price: '€12,50' }
+                    ]
+                },
+                peixes: {
+                    title: 'PEIXE NA BRASA',
+                    items: [
+                        { name: 'Dourada', description: 'Acompanhados com batata e legumes cozidos. 400 - 500 gramas.', price: '€10,00' },
+                        { name: 'Robalo', description: 'Acompanhados com batata e legumes cozidos. 400 - 500 gramas.', price: '€10,00' },
+                        { name: 'Salmão', description: 'Acompanhados com batata e legumes cozidos. 300 gramas.', price: '€11,00' },
+                        { name: 'Choco Frito', description: 'Choco Frito com batatas fritas.', price: '€9,50' },
+                        { name: 'Peixe-Espada', description: 'Acompanhados com batata e legumes cozidos. 300 gramas.', price: '€11,00' },
+                        { name: 'Espetada de Camarão', description: 'Espetada de Camarão com salada mista', price: '€12,00' }
+                    ]
+                },
+                hamburgueres: {
+                    title: 'HAMBÚRGUER NO PÃO',
+                    items: [
+                        { name: 'Hambúrguer Clássico', description: 'Hambúrguer 100% novilho (200 gr) grelhado na brasa com queijo cheddar, alface, tomate e batatas fritas.', price: '€7,50' },
+                        { name: 'Hambúrguer Bacon', description: 'Hambúrguer 100% novilho (200 gr) grelhado na brasa com queijo cheddar, bacon, alface, tomate e batatas fritas.', price: '€8,50' },
+                        { name: 'Hambúrguer Egg', description: 'Hambúrguer 100% novilho (200 gr) grelhado na brasa com queijo cheddar, ovo, alface, tomate e batatas fritas.', price: '€8,50' },
+                        { name: 'Hambúrguer Casa', description: 'Hambúrguer 100% novilho (200 gr) grelhado na brasa com queijo cheddar, bacon, ovo, alface, tomate e batatas fritas.', price: '€9,00' }
+                    ]
+                },
+                menus: {
+                    title: 'MENUS',
+                    items: [
+                        { name: 'Menu Brasa Quente (1 pessoa)', description: 'Prato de carne + 2 acompanhamentos à escolha + 1 bebida 33cl', price: '€9,50' },
+                        { name: 'Menu Entremeada + Salsichas (2 pessoas)', description: '3 Salsichas + 3 fatias de Entremeada + 2 acompanhamentos à escolha + 2 bebidas 33cl', price: '€17,50' },
+                        { name: 'Menu Franguinho à Guia (2 pessoas)', description: '1 Frango inteiro + 2 acompanhamentos à escolha + 2 bebidas 33cl', price: '€15,50' }
+                    ]
+                },
+                acompanhamentos: {
+                    title: 'ACOMPANHAMENTOS',
+                    items: [
+                        { name: 'Arroz', price: '€2,00' },
+                        { name: 'Batata Frita', price: '€2,00' },
+                        { name: 'Batata Cozida', price: '€2,00' },
+                        { name: 'Legumes Cozidos', price: '€2,00' },
+                        { name: 'Salada Mista', price: '€2,00' },
+                        { name: 'Ovo Estrelado', price: '€1,00' }
+                    ]
+                },
+                bebidas: {
+                    title: 'BEBIDAS',
+                    items: [
+                        { name: 'Água 0.50L', price: '€1,20' },
+                        { name: 'Água c/Gás 0.25L', price: '€1,50' },
+                        { name: 'Coca-Cola 0.33L', price: '€1,50' },
+                        { name: 'Coca-Cola Zero 0.33L', price: '€1,50' },
+                        { name: 'Fanta Laranja 0.33L', price: '€1,50' },
+                        { name: 'Ice Tea Limão 0.33L', price: '€1,50' },
+                        { name: 'Ice Tea Pêssego 0.33L', price: '€1,50' },
+                        { name: 'Ice Tea Manga 0.33L', price: '€1,50' },
+                        { name: 'Sumol Laranja 0.33L', price: '€1,50' },
+                        { name: 'Sumol Ananás 0.33L', price: '€1,50' },
+                        { name: 'Super Bock 0.33L', price: '€1,50' },
+                        { name: 'Super Bock Preta 0.33L', price: '€1,50' },
+                        { name: 'Super Bock S/Álcool 0.33L', price: '€1,50' }
+                    ]
+                }
+            };
+
+            // Create and append menu sections
+            Object.entries(menuData).forEach(([category, data]) => {
+                const section = createMenuSection(category, data.title, data.items);
+                menuGrid.appendChild(section);
+            });
+
+            // Shopping Cart Functionality
+            const cart = {
+                items: [],
+                total: 0
+            };
+
+            window.addToCart = function(name, price) {
+                const priceValue = parseFloat(price.replace('€', '').replace(',', '.'));
+                
+                const existingItem = cart.items.find(item => item.name === name);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.items.push({
+                        name: name,
+                        price: priceValue,
+                        quantity: 1
+                    });
+                }
+                
+                updateCart();
+            };
+
+            // Add this new function for inline quantity updates
+            window.updateQuantityInline = function(name, change) {
+                const item = cart.items.find(item => item.name === name);
+                const quantityDisplay = document.querySelector(`.quantity-display[data-item="${name}"]`);
+                
+                if (change < 0 && (!item || item.quantity <= 0)) {
+                    return;
+                }
+                
+                if (change > 0) {
+                    addToCart(name, menuData[Object.keys(menuData).find(category => 
+                        menuData[category].items.some(i => i.name === name)
+                    )].items.find(i => i.name === name).price);
+                } else {
+                    updateQuantity(name, change);
+                }
+                
+                const newQuantity = item ? item.quantity : 0;
+                if (quantityDisplay) {
+                    quantityDisplay.textContent = newQuantity;
+                }
+            };
+
+            // Modify the updateCart function to also update inline quantities
+            function updateCart() {
+                const cartItems = document.querySelector('.cart-items');
+                const cartBadge = document.querySelector('.cart-badge');
+                const navCartBadge = document.querySelector('.nav-cart-badge');
+                const cartTotal = document.querySelector('.cart-total');
+                
+                // Update all quantity displays
+                document.querySelectorAll('.quantity-display').forEach(display => {
+                    const itemName = display.getAttribute('data-item');
+                    const item = cart.items.find(item => item.name === itemName);
+                    display.textContent = item ? item.quantity : 0;
+                });
+
+                cartItems.innerHTML = cart.items.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <h4>${item.name}</h4>
+                            <p>€${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn" onclick="updateQuantity('${item.name}', -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity('${item.name}', 1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                cart.total = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                cartTotal.textContent = `Total: €${cart.total.toFixed(2)}`;
+                
+                // Update both cart badges
+                const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+                cartBadge.textContent = totalItems;
+                navCartBadge.textContent = totalItems;
+            }
+
+            window.updateQuantity = function(name, change) {
+                const item = cart.items.find(item => item.name === name);
+                if (item) {
+                    item.quantity += change;
+                    if (item.quantity <= 0) {
+                        cart.items = cart.items.filter(i => i.name !== name);
+                    }
+                    updateCart();
+                }
+            };
+
+            // Cart Toggle
+            const cartToggle = document.querySelector('.cart-toggle');
+            const cartContainer = document.querySelector('.cart-container');
+            const closeCart = document.querySelector('.close-cart');
+
+            cartToggle.addEventListener('click', () => {
+                cartContainer.classList.toggle('active');
+            });
+
+            closeCart.addEventListener('click', () => {
+                cartContainer.classList.remove('active');
+            });
+
+            // Set default date and time, and validate future times
+            document.addEventListener('DOMContentLoaded', function() {
+                const now = new Date();
+                const today = now.toISOString().split('T')[0];
+
+                const pickupDate = document.getElementById('pickup-date');
+                const timeSlots = document.getElementById('timeSlots');
+                const timeSlotsContainer = document.querySelector('.time-slots');
+
+                // Set default date to today
+                pickupDate.value = today;
+                pickupDate.min = today;
+
+                // Generate time slots
+                function generateTimeSlots(selectedDate) {
+                    const slots = [];
+                    const now = new Date();
+                    const selected = new Date(selectedDate);
+                    const isToday = selected.toDateString() === now.toDateString();
+                    
+                    // Generate slots from 11:00 to 21:45 in 15-minute intervals
+                    for (let hour = 11; hour < 22; hour++) {
+                        for (let minute = 0; minute < 60; minute += 15) {
+                            const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                            
+                            // Check if slot is in the past for today
+                            const slotDate = new Date(selected);
+                            slotDate.setHours(hour, minute, 0, 0);
+                            
+                            const isDisabled = isToday && slotDate < now;
+                            
+                            slots.push({
+                                time: timeString,
+                                disabled: isDisabled
+                            });
+                        }
+                    }
+                    
+                    return slots;
+                }
+
+                // Render time slots
+                function renderTimeSlots(date) {
+                    const slots = generateTimeSlots(date);
+                    timeSlots.innerHTML = slots.map(slot => `
+                        <div class="time-slot ${slot.disabled ? 'disabled' : ''}" 
+                             data-time="${slot.time}" 
+                             ${slot.disabled ? 'disabled' : ''}>
+                            ${slot.time}
+                        </div>
+                    `).join('');
+
+                    // Add click handlers
+                    document.querySelectorAll('.time-slot:not(.disabled)').forEach(slot => {
+                        slot.addEventListener('click', function() {
+                            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                            this.classList.add('selected');
+                            document.getElementById('pickup-time').value = this.dataset.time;
+                            timeSlotsContainer.classList.remove('active');
+                        });
+                    });
+                }
+
+                // Show time slots when clicking the date input
+                pickupDate.addEventListener('click', () => {
+                    timeSlotsContainer.classList.add('active');
+                });
+
+                // Update time slots when date changes
+                pickupDate.addEventListener('change', function() {
+                    renderTimeSlots(this.value);
+                    timeSlotsContainer.classList.add('active');
+                });
+
+                // Hide time slots when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.date-picker-container')) {
+                        timeSlotsContainer.classList.remove('active');
+                    }
+                });
+
+                // Initial render
+                renderTimeSlots(pickupDate.value);
+            });
+
+            // Order confirmation modal functionality
+            const modal = document.getElementById('orderConfirmationModal');
+            const closeModalBtn = document.getElementById('closeConfirmationModal');
+            const cancelOrderBtn = document.getElementById('cancelOrder');
+            const confirmOrderBtn = document.getElementById('confirmOrder');
+            const viewOrderDetailsBtn = document.getElementById('viewOrderDetails');
+            const newOrderBtn = document.getElementById('newOrder');
+            
+            const orderProcessingDiv = document.querySelector('.order-processing');
+            const orderSuccessDiv = document.querySelector('.order-success');
+            const orderErrorDiv = document.querySelector('.order-error');
+
+            // Function to show modal with appropriate state
+            function showOrderModal(state = 'confirm') {
+                // Reset modal state
+                orderProcessingDiv.style.display = 'none';
+                orderSuccessDiv.style.display = 'none';
+                orderErrorDiv.style.display = 'none';
+                confirmOrderBtn.style.display = 'block';
+                cancelOrderBtn.style.display = 'block';
+                viewOrderDetailsBtn.style.display = 'none';
+                newOrderBtn.style.display = 'none';
+                
+                // Set appropriate state
+                if (state === 'confirm') {
+                    orderProcessingDiv.style.display = 'block';
+                    confirmOrderBtn.style.display = 'block';
+                    cancelOrderBtn.style.display = 'block';
+                } else if (state === 'processing') {
+                    orderProcessingDiv.style.display = 'block';
+                    confirmOrderBtn.style.display = 'none';
+                    cancelOrderBtn.style.display = 'none';
+                } else if (state === 'success') {
+                    orderSuccessDiv.style.display = 'block';
+                    confirmOrderBtn.style.display = 'none';
+                    cancelOrderBtn.style.display = 'none';
+                    viewOrderDetailsBtn.style.display = 'block';
+                    newOrderBtn.style.display = 'block';
+                } else if (state === 'error') {
+                    orderErrorDiv.style.display = 'block';
+                    confirmOrderBtn.style.display = 'none';
+                    cancelOrderBtn.style.display = 'none';
+                    newOrderBtn.style.display = 'block';
+                }
+                
+                modal.classList.add('active');
+            }
+
+            // Function to hide modal
+            function hideOrderModal() {
+                modal.classList.remove('active');
+            }
+
+            // Close modal when clicking the X button
+            closeModalBtn.addEventListener('click', hideOrderModal);
+            
+            // Close modal when clicking the cancel button
+            cancelOrderBtn.addEventListener('click', hideOrderModal);
+            
+            // Handle new order button
+            newOrderBtn.addEventListener('click', function() {
+                hideOrderModal();
+                // Optionally clear the cart here
+            });
+
+            // Modified checkout button functionality
+            const checkoutBtn = document.querySelector('.checkout-btn');
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.items.length === 0) {
+                    alert('Adicione itens ao carrinho antes de finalizar o pedido.');
+                    return;
+                }
+
+                const customerName = document.getElementById('customer-name').value;
+                const customerPhone = document.getElementById('customerPhone').value;
+                const customerEmail = document.getElementById('customerEmail').value;
+                const pickupDate = document.getElementById('pickup-date').value;
+                const pickupTime = document.getElementById('pickup-time').value;
+                const customerNotes = document.getElementById('customerNotes').value;
+
+                if (!customerName || !customerPhone || !customerEmail || !pickupDate || !pickupTime) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                const selectedDateTime = new Date(`${pickupDate}T${pickupTime}`);
+                const now = new Date();
+
+                if (selectedDateTime < now) {
+                    alert('Por favor, selecione uma data e hora futura para o levantamento.');
+                    return;
+                }
+
+                const [hours] = pickupTime.split(':');
+                if (parseInt(hours) < 11 || parseInt(hours) >= 22) {
+                    alert('Por favor, selecione um horário entre 11:00 e 22:00.');
+                    return;
+                }
+
+                // Show confirmation modal
+                showOrderModal('confirm');
+            });
+
+            // Handle confirm order button
+            confirmOrderBtn.addEventListener('click', function() {
+                // Show processing state
+                showOrderModal('processing');
+                
+                // Prepare order data
+                const customerName = document.getElementById('customer-name').value;
+                const customerPhone = document.getElementById('customerPhone').value;
+                const customerEmail = document.getElementById('customerEmail').value;
+                const pickupDate = document.getElementById('pickup-date').value;
+                const pickupTime = document.getElementById('pickup-time').value;
+                const customerNotes = document.getElementById('customerNotes').value;
+                
+                const orderData = {
+                    orderId: 'ORD-' + Date.now().toString().slice(-6),
+                    timestamp: new Date().toISOString(),
+                    items: cart.items.map(item => ({
+                        name: item.name,
+                        price: item.price,
+                        quantity: item.quantity
+                    })),
+                    total: cart.total,
+                    customerName,
+                    customerPhone,
+                    customerEmail,
+                    pickupDate,
+                    pickupTime,
+                    customerNotes,
+                    isNew: true  // Flag to highlight new orders
+                };
+                
+                // Simulate order processing
+                setTimeout(() => {
+                    try {
+                        // Get existing pending orders or create new array
+                        let pendingOrders = [];
+                        const existingOrders = localStorage.getItem('pendingOrders');
+                        
+                        if (existingOrders) {
+                            pendingOrders = JSON.parse(existingOrders);
+                        }
+                        
+                        // Add new order to pending orders
+                        pendingOrders.push(orderData);
+                        
+                        // Save to localStorage
+                        localStorage.setItem('pendingOrders', JSON.stringify(pendingOrders));
+                        
+                        // Update order number in success message
+                        document.querySelector('.order-number').textContent = `Número do Pedido: #${orderData.orderId}`;
+                        
+                        // Show success state
+                        showOrderModal('success');
+                        
+                        // Clear cart
+                        cart.items = [];
+                        updateCart();
+                    } catch (error) {
+                        console.error('Error processing order:', error);
+                        showOrderModal('error');
+                    }
+                }, 2000);
+            });
+            
+            // Handle view order details button
+            viewOrderDetailsBtn.addEventListener('click', function() {
+                // In a real implementation, this would navigate to the order details page
+                // For now, just redirect to the order receiving website
+                window.open('/order-receiver/index.html', '_blank');
+            });
+
+            // Mobile Menu Toggle
+            const hamburger = document.querySelector('.hamburger-menu');
+            const navMenu = document.querySelector('.nav-menu');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação do Pedido - Brasa de Miraflores</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .confirmation-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .order-success {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .order-success i {
+            color: #4CAF50;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .order-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .order-details {
+            background: #f8f8f8;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .order-details h3 {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .order-items {
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .store-info {
+            margin-bottom: 30px;
+        }
+
+        .map-container {
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .estimated-time {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .print-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 20px;
+        }
+
+        .print-button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .directions-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: #4285f4;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .directions-button:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="container">
+                <div class="nav-left">
+                    <a href="index.html" class="logo">
+                        <div class="logo-brand">
+                            <div class="logo-square">
+                                <div class="logo-text">BRASA DE</div>
+                                <div class="logo-text">MIRAFLORES</div>
+                                <div class="since">Desde 2004</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="confirmation-container">
+            <div class="order-success">
+                <i class="fas fa-check-circle"></i>
+                <h2>Pedido Confirmado!</h2>
+                <div class="order-number"></div>
+            </div>
+
+            <div class="estimated-time">
+                <i class="fas fa-clock"></i>
+                <span class="pickup-time"></span>
+            </div>
+
+            <div class="order-details">
+                <h3>Detalhes do Pedido</h3>
+                <div class="order-items"></div>
+                <div class="order-total"></div>
+            </div>
+
+            <div class="store-info">
+                <h3>Local de Levantamento</h3>
+                <p>Churrasqueira Yao</p>
+                <p>Av. das Túlipas 29D</p>
+                <p>1495-161 Algés</p>
+                <p>Tel: +351 214 107 080</p>
+                <a href="https://www.google.pt/maps/dir//Churrasqueira+Yao,+Av.+das+T%C3%BAlipas+29D,+1495-161+Alg%C3%A9s/@38.7126549,-9.2276041,17z/data=!4m8!4m7!1m0!1m5!1m1!1s0xd1ecc841159c5f9:0xc848f08045d0d067!2m2!1d-9.2276041!2d38.7126549" 
+                   target="_blank" 
+                   class="directions-button">
+                    <i class="fas fa-directions"></i> Como Chegar
+                </a>
+            </div>
+
+            <div class="map-container" id="map">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3112.4770641393387!2d-9.230177684745284!3d38.71265497960086!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1ecc841159c5f9%3A0xc848f08045d0d067!2sChurrasqueira%20Yao!5e0!3m2!1sen!2spt!4v1650000000000!5m2!1sen!2spt"
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+            <button class="print-button" onclick="window.print()">
+                <i class="fas fa-print"></i> Imprimir Pedido
+            </button>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get order details from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderData = JSON.parse(decodeURIComponent(urlParams.get('orderData')));
+
+            // Display order number
+            const orderNumber = document.querySelector('.order-number');
+            orderNumber.textContent = `Número do Pedido: #${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+
+            // Display pickup time
+            const pickupTime = document.querySelector('.pickup-time');
+            pickupTime.textContent = `Horário de Levantamento: ${orderData.pickupDate} às ${orderData.pickupTime}`;
+
+            // Display order items
+            const orderItems = document.querySelector('.order-items');
+            orderItems.innerHTML = orderData.items.map(item => `
+                <div class="order-item">
+                    <span>${item.quantity}x ${item.name}</span>
+                    <span>€${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            // Display total
+            const orderTotal = document.querySelector('.order-total');
+            orderTotal.innerHTML = `<strong>Total: €${orderData.total.toFixed(2)}</strong>`;
+        });
+    </script>
+</body>
+</html> 
